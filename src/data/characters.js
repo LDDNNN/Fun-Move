@@ -5,6 +5,16 @@
 // Commands are the words the avatar calls during practice levels 1-4; the
 // level-up engine (engine/script.js) builds each level's sequence from them.
 
+import davidImg from '../assets/portraits/david.jpg'
+import devorahImg from '../assets/portraits/devorah.jpg'
+import estherImg from '../assets/portraits/esther.jpg'
+import miriamImg from '../assets/portraits/miriam.jpg'
+import mosheImg from '../assets/portraits/moshe.jpg'
+import samsonImg from '../assets/portraits/samson.jpg'
+import yosefImg from '../assets/portraits/yosef.jpg'
+
+const PORTRAITS = { david: davidImg, devorah: devorahImg, esther: estherImg, miriam: miriamImg, moshe: mosheImg, samson: samsonImg, yosef: yosefImg }
+
 export const CUES = {
   idle: 'idle',
   move: 'move',
@@ -369,7 +379,24 @@ const KID_GUIDE = {
   },
 }
 
-for (const c of CHARACTER_MASTER_CONFIGS) Object.assign(c, KID_GUIDE[c.id])
+// Role, opening line and adventure name from the original GameGuide Studio site.
+const ORIGINAL = {
+  samson: { role: 'גיבור תיאטרלי', opening: 'אני שמשון! היום נגלה שכוח אמיתי הוא כוח בשליטה. זזים חזק, עוצרים בזמן, ועוזרים לחברים.', adventure: 'השער שמחכה לסימן' },
+  david: { role: 'מאמן קצבי', opening: 'אני דוד! היום אני מסביר משחק פשוט וברור: עומדים בטורים, רצים למטרה, חוזרים לקבוצה ונותנים כיף.', adventure: 'התזמורת שהתבלבלה' },
+  esther: { role: 'מדריכת פוקוס', opening: 'אני אסתר. היום נתרגל אומץ שקט: לעצור, לנשום, להקשיב, ולפעול בדיוק בזמן הנכון.', adventure: 'הקוד של הארמון' },
+  miriam: { role: 'מדריכת קצב ושמחה', opening: 'אני מרים! היום אנחנו מכניסים קצב לגוף ושמחה לכיתה. מקשיבים לתוף, זזים יחד, ומרגישים איך הקבוצה הופכת למעגל אחד.', adventure: 'גשר המקצבים' },
+  devorah: { role: 'מדריכת החלטות', opening: 'אני דבורה! היום אני עוזרת לכם לחשוב מהר, למסור מדויק, ולמצוא צבע בלי להילחץ.', adventure: 'מפת הצבעים' },
+  moshe: { role: 'מנהיג דרך', opening: 'אני משה. כשיש אתגר גדול, לא נבהלים. מקשיבים, מסתדרים, עוברים צעד אחרי צעד, ועוזרים לכל הקבוצה להגיע לצד השני.', adventure: 'מסע של שלושה צעדים' },
+  yosef: { role: 'מדריך דיוק', opening: 'אני יוסף. חלום גדול נבנה מפרטים קטנים, והיום האצבעות שלנו ילמדו דיוק וסבלנות.', adventure: 'החלום שבנוי מצורות' },
+  ruth: { role: 'מדריכי חברות', opening: 'אנחנו רות ויהושע. בשדה שלנו כולם חברים, ואף אחד לא נשאר מאחור.', adventure: 'השדה שמחכה לכולם' },
+}
+
+for (const c of CHARACTER_MASTER_CONFIGS) {
+  Object.assign(c, KID_GUIDE[c.id], ORIGINAL[c.id])
+  c.portrait = PORTRAITS[c.id] ?? null
+  // The character opens the lesson with their own line from the original site.
+  c.intro = [{ text: c.opening, cue: 'idle' }, ...c.intro.slice(1)]
+}
 
 // Questions kids ask from the board; the avatar answers out loud.
 export const KID_QUESTIONS = [

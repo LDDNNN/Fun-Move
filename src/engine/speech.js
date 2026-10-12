@@ -87,7 +87,11 @@ export function useVoiceCommands(enabled, onCommand) {
       setListening(false)
       if (!stopped) setTimeout(() => !stopped && rec.start(), 300)
     }
-    rec.onerror = () => setListening(false)
+    rec.onerror = (e) => {
+      setListening(false)
+      // Microphone blocked or unavailable: stop instead of retrying forever.
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed' || e.error === 'audio-capture') stopped = true
+    }
     rec.onresult = (e) => {
       const said = e.results[e.results.length - 1][0].transcript.trim()
       setHeard(said)

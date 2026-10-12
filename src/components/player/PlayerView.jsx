@@ -14,9 +14,14 @@ import VictoryOverlay from './VictoryOverlay.jsx'
 function StartScreen({ character, onStart }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
-      <div className="text-[140px] leading-none">{character.emoji}</div>
-      <h1 className="font-display text-6xl text-chalk">{character.hud.what}</h1>
-      <p className="max-w-2xl text-2xl text-chalk/80">{character.story}</p>
+      {character.portrait ? (
+        <img src={character.portrait} alt={character.name} width={640} height={480} className="h-[38vh] w-auto max-w-full rounded-[32px] border-4 border-gold object-cover shadow-[0_24px_60px_-20px_rgba(0,0,0,.6)]" />
+      ) : (
+        <div className="text-[140px] leading-none">{character.emoji}</div>
+      )}
+      <h1 className="font-display text-6xl text-balance text-chalk">{character.gameTitle}</h1>
+      <p className="max-w-[40ch] text-2xl leading-relaxed text-chalk/85">{character.opening}</p>
+      <p className="text-lg font-bold text-gold">הרפתקה: {character.adventure}</p>
       <button
         type="button"
         onClick={onStart}
@@ -40,7 +45,7 @@ export default function PlayerView() {
   }
 
   return (
-    <div id="player" className="flex min-h-full flex-col bg-board text-chalk" dir="rtl">
+    <div id="player" className="flex min-h-full flex-col overflow-x-hidden bg-board text-chalk" dir="rtl">
       {notStarted ? (
         <StartScreen character={character} onStart={start} />
       ) : (

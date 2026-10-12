@@ -40,7 +40,7 @@ export default function AvatarStage({ character, isTalking }) {
   return (
     <div className="flex flex-col items-center gap-3">
       <div
-        className={`relative aspect-square w-full max-w-[340px] overflow-hidden rounded-[32px] border-4 transition-colors duration-300 ${isTalking ? 'halo-talking border-gold' : 'border-board-3'}`}
+        className={`relative aspect-[4/5] w-full max-w-[340px] overflow-hidden rounded-[32px] border-4 transition-colors duration-300 ${isTalking ? 'halo-talking border-gold' : 'border-board-3'}`}
         style={{ background: `radial-gradient(circle at 50% 35%, ${character.color}, #0f1e3d 75%)` }}
       >
         <video
@@ -59,14 +59,24 @@ export default function AvatarStage({ character, isTalking }) {
           onTimeUpdate={onTimeUpdate}
           className={`absolute inset-0 h-full w-full object-cover ${hasVideo ? '' : 'hidden'}`}
         />
-        {!hasVideo && (
+        {!hasVideo && character.portrait && (
+          <img
+            src={character.portrait}
+            alt={character.name}
+            width={640}
+            height={480}
+            className={`absolute inset-0 h-full w-full object-cover object-top ${isTalking ? 'avatar-talking' : 'avatar-idle'}`}
+          />
+        )}
+        {!hasVideo && !character.portrait && (
           <div className="flex h-full w-full flex-col items-center justify-center">
-            <span className="select-none text-[150px] leading-none drop-shadow-xl transition-transform duration-150" style={{ transform: isTalking ? 'scale(1.06) rotate(-3deg)' : 'scale(1)' }}>
-              {character.emoji}
-            </span>
-            <span className="mt-2 font-display text-4xl text-chalk drop-shadow">{character.name}</span>
+            <span className={`select-none text-[150px] leading-none drop-shadow-xl ${isTalking ? 'avatar-talking' : ''}`}>{character.emoji}</span>
           </div>
         )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-board via-board/70 to-transparent px-4 pb-3 pt-10 text-center">
+          <div className="font-display text-3xl text-chalk">{character.name}</div>
+          <div className="text-sm font-bold text-gold">{character.role}</div>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <span className={`text-xl font-bold ${isTalking ? 'text-gold' : 'text-chalk/60'}`}>🎤 {character.name} {character.speaks ?? 'מדבר'} אליכם</span>

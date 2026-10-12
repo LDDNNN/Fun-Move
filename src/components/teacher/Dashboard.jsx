@@ -88,11 +88,22 @@ export default function Dashboard() {
                   type="button"
                   onClick={() => dispatch({ type: 'SELECT_CHARACTER', id: c.id })}
                   aria-pressed={active}
-                  className={`flex min-h-[110px] flex-col items-start gap-1 rounded-2xl border-2 p-4 text-right transition ${active ? 'border-gold-deep bg-gold/15 shadow-md' : 'border-line bg-white hover:border-muted'}`}
+                  className={`group flex flex-col overflow-hidden rounded-2xl border-2 bg-white text-right transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(27,34,54,.45)] ${active ? 'border-gold-deep shadow-[0_12px_28px_-14px_rgba(232,162,0,.7)]' : 'border-line'}`}
                 >
-                  <span className="text-3xl">{c.emoji}</span>
-                  <span className="font-bold">{c.name} · {c.gameTitle}</span>
-                  <span className="text-xs leading-snug text-muted">{c.skill}</span>
+                  <div className="relative aspect-[4/3] w-full overflow-hidden" style={{ background: `linear-gradient(160deg, ${c.color}, #0f1e3d)` }}>
+                    {c.portrait ? (
+                      <img src={c.portrait} alt="" width={640} height={480} loading="lazy" className="h-full w-full object-cover object-top transition duration-500 ease-out group-hover:scale-105" />
+                    ) : (
+                      <span className="flex h-full items-center justify-center text-6xl">{c.emoji}</span>
+                    )}
+                    {active && <span className="absolute left-2 top-2 rounded-full bg-gold px-2.5 py-1 text-xs font-bold text-ink">נבחר</span>}
+                  </div>
+                  <div className="flex flex-1 flex-col gap-0.5 p-3">
+                    <span className="text-lg font-bold leading-tight">{c.name}</span>
+                    <span className="text-xs font-bold text-gold-deep">{c.role}</span>
+                    <span className="mt-1 text-sm font-medium">{c.gameTitle}</span>
+                    <span className="text-xs leading-snug text-muted">{c.skill}</span>
+                  </div>
                 </button>
               )
             })}
@@ -104,7 +115,8 @@ export default function Dashboard() {
         </Panel>
 
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-          <Panel title={`${character.emoji} ${character.name}: ${character.gameTitle} ו${character.finalTitle}`}>
+          <Panel title={`${character.name}: ${character.gameTitle} ו${character.finalTitle}`}>
+            <p className="-mt-2 mb-4 rounded-xl bg-paper p-3 text-sm leading-relaxed">“{character.opening}” <span className="font-bold text-gold-deep">· הרפתקה: {character.adventure}</span></p>
             <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
               <div><dt className="font-bold text-muted">מיומנות</dt><dd>{character.skill}</dd></div>
               <div><dt className="font-bold text-muted">סידור הכיתה</dt><dd>{character.formationLabel}</dd></div>

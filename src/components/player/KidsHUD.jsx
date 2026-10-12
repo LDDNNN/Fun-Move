@@ -21,13 +21,13 @@ export function FormationMap({ formation }) {
 export function StepsBar({ phase }) {
   const current = kidStepIndex(phase)
   return (
-    <ol className="flex items-center gap-1.5 sm:gap-2" aria-label="שלבי המשחק">
+    <ol className="flex flex-wrap items-center gap-1.5 sm:gap-2" aria-label="שלבי המשחק">
       {KID_STEPS.map((s, i) => {
         const state = i < current ? 'done' : i === current ? 'now' : 'next'
         return (
           <li key={s.id} className="flex items-center gap-1.5 sm:gap-2">
             <span
-              className={`flex items-center gap-1.5 rounded-2xl px-3 py-2 text-lg font-bold transition-all sm:text-xl ${
+              className={`flex items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-1.5 text-base font-bold transition-[scale,background-color,color,box-shadow] duration-300 ease-[var(--ease-out)] sm:px-3 sm:py-2 sm:text-xl ${
                 state === 'now' ? 'scale-105 bg-gold text-board shadow-[0_0_24px_rgba(255,200,61,.6)]' : state === 'done' ? 'bg-go/25 text-chalk' : 'bg-board-3 text-chalk/50'
               }`}
               aria-current={state === 'now' ? 'step' : undefined}
@@ -35,7 +35,7 @@ export function StepsBar({ phase }) {
               <span>{state === 'done' ? '✓' : s.icon}</span>
               <span>{i + 1}. {s.label}</span>
             </span>
-            {i < KID_STEPS.length - 1 && <span className="text-chalk/40">←</span>}
+            {i < KID_STEPS.length - 1 && <span className="hidden text-chalk/40 sm:inline">←</span>}
           </li>
         )
       })}
@@ -49,7 +49,11 @@ export default function KidsHUD({ character, phase, level, classPower }) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 bg-board-2/80 px-6 py-4">
       <div className="flex min-w-0 items-center gap-3">
-        <span className="text-5xl">{character.emoji}</span>
+        {character.portrait ? (
+          <img src={character.portrait} alt="" width={640} height={480} className="h-16 w-16 shrink-0 rounded-full border-[3px] border-gold object-cover object-top" />
+        ) : (
+          <span className="text-5xl">{character.emoji}</span>
+        )}
         <div className="min-w-0">
           <div className="text-sm font-bold tracking-wide text-gold">מה עושים?</div>
           <h1 className="font-display text-3xl leading-tight text-chalk sm:text-4xl">{missionTitle}</h1>

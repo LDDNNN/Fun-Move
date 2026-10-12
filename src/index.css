@@ -24,7 +24,17 @@
 }
 
 html, body, #root { height: 100%; }
-body { margin: 0; font-family: var(--font-body); }
+
+:root {
+  /* Motion tokens (Emil Kowalski): strong custom curves, never ease-in for UI */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Every pressable thing answers the press */
+button, a[href] { transition-property: scale, translate, background-color, border-color, color, box-shadow, opacity; transition-duration: 160ms; transition-timing-function: var(--ease-out); }
+button:not(:disabled):active, a[href]:active { scale: 0.97; }
+body { margin: 0; font-family: var(--font-body); background: var(--color-paper); color: var(--color-ink); }
 
 @keyframes halo-pulse {
   0%, 100% { box-shadow: 0 0 0 6px rgba(255, 200, 61, .55), 0 0 40px 10px rgba(255, 200, 61, .35); }
@@ -35,8 +45,8 @@ body { margin: 0; font-family: var(--font-body); }
 @keyframes wave { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
 .wave-bar { transform-origin: center; animation: wave .9s ease-in-out infinite; }
 
-@keyframes pop-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.pop-in { animation: pop-in .35s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes pop-in { from { transform: scale(.82); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pop-in { animation: pop-in .28s var(--ease-out) both; }
 
 @keyframes firework {
   0% { transform: translate(0, 0) scale(.4); opacity: 1; }
@@ -44,9 +54,23 @@ body { margin: 0; font-family: var(--font-body); }
 }
 .spark { animation: firework 1.4s ease-out infinite; }
 
+/* Portrait "speaking": a slow push-in with a small sway while the line plays */
+@keyframes talk { 0%, 100% { transform: scale(1.06) translateY(0); } 50% { transform: scale(1.085) translateY(-1.5%); } }
+@keyframes idle-drift { 0%, 100% { transform: scale(1.02); } 50% { transform: scale(1.045); } }
+.avatar-talking { animation: talk .9s var(--ease-in-out) infinite; }
+.avatar-idle { animation: idle-drift 9s ease-in-out infinite; }
+
+::selection { background: var(--color-gold); color: var(--color-board); }
+:focus-visible { outline: 3px solid var(--color-gold-deep); outline-offset: 3px; }
+* { scrollbar-color: var(--color-board-3) transparent; }
+
 @media (prefers-reduced-motion: reduce) {
-  .halo-talking, .wave-bar, .pop-in, .spark { animation: none !important; }
+  /* Fewer, gentler: keep fades that explain state, drop movement */
+  .avatar-talking, .avatar-idle, .halo-talking, .wave-bar, .spark { animation: none !important; }
+  .pop-in { animation: fade-in .2s ease both !important; }
+  button:active, a[href]:active { scale: 1; }
 }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 @media print {
   body * { visibility: hidden; }

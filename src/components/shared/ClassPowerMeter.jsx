@@ -11,9 +11,10 @@ export default function ClassPowerMeter({ value, teacher = false, size = 'board'
         <span className="tabular-nums" style={{ color: big ? 'var(--color-gold)' : undefined }}>{value}%</span>
       </div>
       <div className={`relative w-full overflow-hidden rounded-full ${big ? 'h-6 bg-board-3' : 'h-4 bg-line'}`} role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label="כוח הכיתה">
+        {/* clip-path instead of width: the fill grows from the right edge (RTL) without triggering layout */}
         <div
-          className="h-full rounded-full bg-gradient-to-l from-gold to-gold-deep transition-[width] duration-700 ease-out"
-          style={{ width: `${value}%`, boxShadow: value > 0 ? '0 0 18px rgba(255,200,61,.7)' : 'none' }}
+          className="h-full w-full rounded-full bg-gradient-to-l from-gold to-gold-deep"
+          style={{ clipPath: `inset(0 0 0 ${100 - value}% round 999px)`, transition: 'clip-path 700ms var(--ease-out)' }}
         />
         {[25, 50, 75].map((m) => (
           <span key={m} className="absolute top-0 h-full w-0.5 bg-black/20" style={{ right: `${m}%` }} />
