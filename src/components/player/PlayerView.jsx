@@ -1,7 +1,7 @@
 // #player: the full-screen smart-board view the kids see. No admin text here.
-import { getCharacter, KID_QUESTIONS } from '../../data/characters.js'
+import { getCharacter } from '../../data/characters.js'
 import { dispatch, useLesson } from '../../engine/store.js'
-import { answerQuestion, useScriptRunner } from '../../engine/useScriptRunner.js'
+import { useScriptRunner } from '../../engine/useScriptRunner.js'
 import ClassSuccessTracker from '../shared/ClassSuccessTracker.jsx'
 import ClassVictoryCertificate from '../shared/ClassVictoryCertificate.jsx'
 import AvatarStage from './AvatarStage.jsx'
@@ -10,6 +10,7 @@ import GameDemoSimulations from './GameDemoSimulations.jsx'
 import KidsHUD, { FormationMap } from './KidsHUD.jsx'
 import TeacherRemote from './TeacherRemote.jsx'
 import VictoryOverlay from './VictoryOverlay.jsx'
+import VoiceAgent, { AgentQuestion } from './VoiceAgent.jsx'
 
 function StartScreen({ character, onStart }) {
   return (
@@ -45,19 +46,19 @@ export default function PlayerView() {
   }
 
   return (
-    <div id="player" className="flex min-h-full flex-col overflow-x-hidden bg-board text-chalk" dir="rtl">
+    <div id="player" className="flex min-h-full flex-col overflow-x-hidden bg-board text-chalk lg:h-[100dvh] lg:min-h-0" dir="rtl">
       {notStarted ? (
         <StartScreen character={character} onStart={start} />
       ) : (
         <>
           <KidsHUD character={character} phase={s.phase} level={s.level} classPower={s.classPower} />
 
-          <main className="grid flex-1 grid-cols-1 gap-5 p-5 lg:grid-cols-[minmax(260px,340px)_1fr_minmax(220px,280px)]">
-            <section className="flex flex-col items-center justify-center">
+          <main className="grid flex-1 grid-cols-1 gap-5 px-5 py-4 lg:min-h-0 lg:grid-cols-[minmax(240px,320px)_1fr_minmax(220px,280px)]">
+            <section className="flex flex-col items-center justify-center lg:min-h-0">
               <AvatarStage character={character} isTalking={s.isTalking} />
             </section>
 
-            <section className="min-h-[300px] overflow-hidden rounded-[28px] border-2 border-board-3 bg-board-2">
+            <section className="min-h-[260px] overflow-hidden rounded-[28px] border-2 border-board-3 bg-board-2 lg:min-h-0">
               {s.phase === 'summary' ? (
                 <div className="flex h-full flex-col items-center justify-center gap-6 p-6">
                   <GameDemoSimulationsSmall formation={character.formation} cue={s.cue} cueAt={s.cueAt} />
@@ -68,7 +69,7 @@ export default function PlayerView() {
               )}
             </section>
 
-            <aside className="flex flex-col gap-4">
+            <aside className="flex flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
               <div className="rounded-3xl bg-board-2 p-4">
                 <div className="text-sm font-bold text-gold">📍 איפה עומדים?</div>
                 <div className="mt-1 text-xl font-bold">{character.formationLabel}</div>
@@ -87,22 +88,12 @@ export default function PlayerView() {
             </aside>
           </main>
 
-          <footer className="flex flex-col items-center gap-3 px-5 pb-5">
-            <div className="flex min-h-[96px] w-full max-w-5xl items-center justify-center rounded-[28px] bg-chalk px-8 py-4 text-center shadow-xl" aria-live="polite">
-              <p className="font-display text-3xl leading-snug text-board sm:text-4xl">{s.line || character.story}</p>
+          <footer className="flex flex-col items-center gap-2.5 px-5 pb-4">
+            <AgentQuestion character={character} status={s.agentStatus} question={s.agentQuestion} />
+            <div className="flex min-h-[84px] w-full max-w-5xl items-center justify-center rounded-[28px] bg-chalk px-8 py-4 text-center shadow-xl" aria-live="polite">
+              <p className="font-display text-2xl leading-snug text-board sm:text-[2.1rem]">{s.line || character.story}</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-2">
-              {KID_QUESTIONS.map((q) => (
-                <button
-                  key={q.id}
-                  type="button"
-                  onClick={() => answerQuestion(q.answer(character))}
-                  className="min-h-[52px] rounded-2xl bg-board-3 px-5 text-lg font-bold text-chalk transition hover:bg-board-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
-                >
-                  {q.label}
-                </button>
-              ))}
-            </div>
+            <VoiceAgent character={character} status={s.agentStatus} question={s.agentQuestion} />
           </footer>
         </>
       )}

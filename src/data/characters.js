@@ -398,12 +398,12 @@ for (const c of CHARACTER_MASTER_CONFIGS) {
   c.intro = [{ text: c.opening, cue: 'idle' }, ...c.intro.slice(1)]
 }
 
-// Questions kids ask from the board; the avatar answers out loud.
+// Ready-made questions on the board; the voice agent answers them like any other.
 export const KID_QUESTIONS = [
-  { id: 'where', label: '🏃 איפה עומדים?', answer: (c) => `עומדים ב${c.formationLabel}, עם רווח ידיים מכל חבר.` },
-  { id: 'when', label: '✋ מתי יוצאים?', answer: (c) => c.hud.when },
-  { id: 'hard', label: '🦁 מה עושים אם קשה?', answer: () => 'נושמים עמוק, מנסים שוב, ומבקשים עזרה מחבר. כל ניסיון מוסיף כוח לכיתה!' },
-  { id: 'win', label: '🏆 איך מנצחים?', answer: () => 'מנצחים יחד! כשכל הכיתה עובדת טוב, סרגל כוח הכיתה מתמלא.' },
+  { id: 'where', question: 'איפה עומדים?' },
+  { id: 'when', question: 'מתי יוצאים?' },
+  { id: 'hard', question: 'מה עושים אם קשה?' },
+  { id: 'win', question: 'איך מנצחים?' },
 ]
 
 export const getCharacter = (id) =>

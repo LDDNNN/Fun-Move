@@ -6,6 +6,7 @@ import { getCharacter } from '../data/characters.js'
 import { buildScript } from './script.js'
 import { dispatch, getState, useLesson } from './store.js'
 import { sleep, speak, stopSpeaking } from './speech.js'
+import { askAgent } from './voiceAgent.js'
 
 // Kept between runs so a paused script resumes from the same line.
 const memory = { key: '', steps: [], index: 0 }
@@ -70,13 +71,51 @@ export function useScriptRunner() {
   }, [runId, running])
 }
 
-// Kid question chips: pause the lesson, answer out loud, then pick up where it stopped.
-export async function answerQuestion(text) {
-  const wasRunning = getState().running
-  if (wasRunning) dispatch({ type: 'PAUSE' })
+// Voice agent: pause the lesson, let the character answer the kid's question out
+// loud (streaming the words onto the subtitle), then pick up where it stopped.
+let agentCall = null
+let resumeAfter = false // a newer question inherits the lesson it interrupted
+
+export async function askCharacter(question) {
+  const q = question.trim()
+  if (!q) return
+  if (!agentCall) resumeAfter = getState().running
+  agentCall?.abort()
+  const ctl = new AbortController()
+  agentCall = ctl
+
+  if (getState().running) dispatch({ type: 'PAUSE' })
   stopSpeaking()
+  const character = getCharacter(getState().characterId)
+  dispatch({ type: 'SET_AGENT', status: 'thinking', question: q })
+  dispatch({ type: 'SET_LINE', text: '…', cue: getState().cue })
+
+  let text
+  try {
+    ;({ text } = await askAgent(character, q, getState(), {
+      signal: ctl.signal,
+      onText: ({ text: partial }) => dispatch({ type: 'SET_LINE', text: partial, cue: getState().cue }),
+    }))
+  } catch {
+    return // superseded by a newer question
+  }
+  if (agentCall !== ctl) return
+
   dispatch({ type: 'SET_LINE', text, cue: getState().cue })
+  dispatch({ type: 'SET_AGENT', status: 'speaking' })
   await speak(text, { onStart: () => dispatch({ type: 'SET_TALKING', value: true }) })
+  if (agentCall !== ctl) return
   dispatch({ type: 'SET_TALKING', value: false })
-  if (wasRunning && !getState().running) dispatch({ type: 'TOGGLE_PAUSE' })
+  dispatch({ type: 'SET_AGENT', status: 'idle' })
+  agentCall = null
+  if (resumeAfter && !getState().running) dispatch({ type: 'TOGGLE_PAUSE' })
+  resumeAfter = false
+}
+
+export function stopCharacter() {
+  agentCall?.abort()
+  agentCall = null
+  stopSpeaking()
+  dispatch({ type: 'SET_TALKING', value: false })
+  dispatch({ type: 'SET_AGENT', status: 'idle' })
 }

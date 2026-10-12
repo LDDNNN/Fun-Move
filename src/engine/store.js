@@ -26,6 +26,8 @@ export const initialState = {
   victoryShown: false,
   showCertificate: false,
   lessonStartedAt: null,
+  agentStatus: 'idle', // idle · listening · thinking · speaking
+  agentQuestion: '',
 }
 
 function addPower(state, points) {
@@ -76,6 +78,8 @@ export function reducer(state, action) {
       return goPhase(state, action.next)
     case 'PAUSE':
       return { ...state, running: false, isTalking: false, countdown: null }
+    case 'SET_AGENT':
+      return { ...state, agentStatus: action.status, agentQuestion: action.question ?? state.agentQuestion }
     case 'SCRIPT_DONE':
       return { ...state, running: false, isTalking: false }
     case 'ADD_POWER':

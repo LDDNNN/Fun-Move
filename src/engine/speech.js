@@ -40,9 +40,13 @@ export function speak(text, { onStart, rate = 0.95 } = {}) {
     if (hebrewVoice) u.voice = hebrewVoice
     u.rate = rate
     u.pitch = 1.05
+    const startedAt = Date.now()
+    // If the browser can't speak (no voice, blocked audio) the utterance fails at
+    // once; keep the subtitle up long enough for the class to read it.
+    const finishReadable = () => setTimeout(finish, Math.max(0, estimateMs(text) - (Date.now() - startedAt)))
     u.onstart = () => onStart?.()
     u.onend = finish
-    u.onerror = finish
+    u.onerror = (e) => (e.error === 'interrupted' || e.error === 'canceled' ? finish() : finishReadable())
     synth.speak(u)
     // No Hebrew voice installed: still show the line for a readable amount of time.
     if (!hebrewVoice) {
