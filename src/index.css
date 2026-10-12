@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Secular One", "Rubik", system-ui, sans-serif;
+  --font-body: "Rubik", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  /* Board palette: deep gym-night blue with a single gold "class power" accent */
+  --color-board: #0f1e3d;
+  --color-board-2: #172a52;
+  --color-board-3: #22396b;
+  --color-gold: #ffc83d;
+  --color-gold-deep: #e8a200;
+  --color-ice: #8fd8ff;
+  --color-go: #3ccf7a;
+  --color-stop: #ff5a5f;
+  --color-calm: #5aa9ff;
+  --color-chalk: #f4f7ff;
+
+  /* Teacher console palette */
+  --color-paper: #f6f7fb;
+  --color-ink: #1b2236;
+  --color-muted: #5d6680;
+  --color-line: #dfe3ee;
+}
+
+html, body, #root { height: 100%; }
+body { margin: 0; font-family: var(--font-body); }
+
+@keyframes halo-pulse {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(255, 200, 61, .55), 0 0 40px 10px rgba(255, 200, 61, .35); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 200, 61, .8), 0 0 70px 22px rgba(255, 200, 61, .5); }
+}
+.halo-talking { animation: halo-pulse 1.1s ease-in-out infinite; }
+
+@keyframes wave { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+.wave-bar { transform-origin: center; animation: wave .9s ease-in-out infinite; }
+
+@keyframes pop-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pop-in { animation: pop-in .35s cubic-bezier(.2, 1.4, .4, 1) both; }
+
+@keyframes firework {
+  0% { transform: translate(0, 0) scale(.4); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
+}
+.spark { animation: firework 1.4s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .halo-talking, .wave-bar, .pop-in, .spark { animation: none !important; }
+}
+
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; inset: 0; margin: 0; box-shadow: none !important; }
+}
