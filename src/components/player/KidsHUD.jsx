@@ -6,12 +6,16 @@ import { basePositions } from './GameDemoSimulations.jsx'
 export function FormationMap({ formation }) {
   const kids = basePositions(formation)
   return (
-    <svg viewBox="0 0 600 340" className="h-full w-full" aria-hidden="true">
+    <svg viewBox="0 -40 600 380" className="h-full w-full" aria-hidden="true">
+      {/* the board is at the front, so kids know which way they face */}
+      <rect x={150} y={-36} width={300} height={28} rx={8} fill="#f4f7ff" />
+      <text x={300} y={-16} textAnchor="middle" fontSize={18} fontWeight={800} fill="#0f1e3d" fontFamily="Rubik, sans-serif">הלוח</text>
       <rect x={4} y={4} width={592} height={332} rx={26} fill="#123a2a" />
       {kids.map((k) => (
-        <g key={k.i}>
-          <circle cx={k.x} cy={k.y} r={formation === 'columns' ? 13 : 22} fill="none" stroke="#ffc83d" strokeWidth={3} strokeDasharray="6 6" opacity={0.6} />
-          <circle cx={k.x} cy={k.y} r={10} fill={k.shirt} />
+        <g key={k.i} transform={`translate(${k.x},${k.y})`}>
+          <circle r={formation === 'columns' ? 13 : 22} fill="none" stroke="#ffc83d" strokeWidth={3} strokeDasharray="6 6" opacity={0.7} />
+          <circle r={11} fill={k.shirt} />
+          <circle r={6} cy={-1} fill={k.skin} />
         </g>
       ))}
     </svg>
@@ -44,27 +48,20 @@ export function StepsBar({ phase }) {
 }
 
 export default function KidsHUD({ character, phase, level, classPower }) {
-  const missionTitle =
-    phase === 'practice' ? `שלב ${level}: ${character.levelTitles[level - 1]}` : phase === 'play' ? character.finalTitle : character.hud.what
+  const title = phase === 'practice' ? character.levelTitles[level - 1] : phase === 'play' ? character.finalTitle : character.gameTitle
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 bg-board-2/80 px-6 py-4">
-      <div className="flex min-w-0 items-center gap-3">
-        {character.portrait ? (
-          <img src={character.portrait} alt="" width={640} height={480} className="h-16 w-16 shrink-0 rounded-full border-[3px] border-gold object-cover object-top" />
-        ) : (
-          <span className="text-5xl">{character.emoji}</span>
-        )}
-        <div className="min-w-0">
-          <div className="text-sm font-bold tracking-wide text-gold">מה עושים?</div>
-          <h1 className="font-display text-3xl leading-tight text-chalk sm:text-4xl">{missionTitle}</h1>
-        </div>
-      </div>
+    <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 bg-board-2/80 px-6 py-3">
+      <h1 className="min-w-0 font-display text-[clamp(1.9rem,3vw,2.8rem)] leading-tight text-chalk">{title}</h1>
       <StepsBar phase={phase} />
-      <div className="flex w-full items-center gap-4 sm:w-[420px]">
+      <div className="flex w-full items-center gap-5 sm:w-[440px]">
         {phase === 'practice' && (
-          <div className="shrink-0 rounded-2xl bg-board-3 px-4 py-2 text-center">
-            <div className="text-xs font-bold text-gold">כמה חזרות?</div>
-            <div className="text-xl font-bold text-chalk tabular-nums">סבב {level} מתוך 4</div>
+          <div className="shrink-0 text-center" aria-label={`סבב ${level} מתוך 4`}>
+            <div className="text-lg font-bold text-chalk tabular-nums">סבב {level} מתוך 4</div>
+            <div className="mt-1 flex justify-center gap-1.5" aria-hidden="true">
+              {[1, 2, 3, 4].map((n) => (
+                <span key={n} className={`size-3.5 rounded-full ${n < level ? 'bg-go' : n === level ? 'bg-gold' : 'bg-board-3'}`} />
+              ))}
+            </div>
           </div>
         )}
         <ClassPowerMeter value={classPower} />

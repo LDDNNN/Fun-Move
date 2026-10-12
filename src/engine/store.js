@@ -49,7 +49,7 @@ export function reducer(state, action) {
     case 'START_LESSON':
       return { ...goPhase(state, 'setup'), lessonStartedAt: state.lessonStartedAt ?? Date.now() }
     case 'GO_PHASE':
-      return goPhase(state, action.phase, action.level ?? 1)
+      return { ...goPhase(state, action.phase, action.level ?? 1), lessonStartedAt: state.lessonStartedAt ?? Date.now() }
     case 'NEXT': {
       if (state.phase === 'practice' && state.level < 4) return goPhase(state, 'practice', state.level + 1)
       const i = PHASES.indexOf(state.phase)
