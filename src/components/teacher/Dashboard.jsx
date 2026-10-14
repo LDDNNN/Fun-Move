@@ -1,5 +1,6 @@
 // Teacher view: choose the character, run the 45-minute lesson, award class power
 // and fill the success tracker. The kids only ever see #player.
+import CharacterArt from '../shared/CharacterArt.jsx'
 import { useEffect, useState } from 'react'
 import { CHARACTER_MASTER_CONFIGS, getCharacter } from '../../data/characters.js'
 import { LESSON_SEGMENTS, LEVELS, segmentForPhase } from '../../data/lesson.js'
@@ -79,6 +80,24 @@ export default function Dashboard() {
 
       <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6">
         <Panel title="בחירת דמות ומשחק">
+          <div className="mb-3 flex flex-wrap items-center gap-2" role="radiogroup" aria-label="סגנון הדמות">
+            <span className="font-bold">סגנון הדמות:</span>
+            {[
+              ['photo', '📷 תמונה מקורית'],
+              ['drawn', '🎨 דמות מצוירת'],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={s.avatarStyle === value}
+                onClick={() => dispatch({ type: 'SET_AVATAR_STYLE', value })}
+                className={`min-h-[50px] rounded-xl border-2 px-4 font-bold transition-colors ${s.avatarStyle === value ? 'border-gold-deep bg-gold text-ink' : 'border-line bg-white'}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {CHARACTER_MASTER_CONFIGS.map((c) => {
               const active = c.id === s.characterId
@@ -91,11 +110,7 @@ export default function Dashboard() {
                   className={`group flex flex-col overflow-hidden rounded-2xl border-2 bg-white text-right transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(27,34,54,.45)] ${active ? 'border-gold-deep shadow-[0_12px_28px_-14px_rgba(232,162,0,.7)]' : 'border-line'}`}
                 >
                   <div className="relative aspect-[4/3] w-full overflow-hidden" style={{ background: `linear-gradient(160deg, ${c.color}, #0f1e3d)` }}>
-                    {c.portrait ? (
-                      <img src={c.portrait} alt="" width={640} height={480} loading="lazy" className="h-full w-full object-cover object-top transition duration-500 ease-out group-hover:scale-105" />
-                    ) : (
-                      <span className="flex h-full items-center justify-center text-6xl">{c.emoji}</span>
-                    )}
+                    <CharacterArt character={c} imgClassName="h-full w-full object-cover object-top transition duration-500 ease-out group-hover:scale-105" figureClassName="h-full w-full py-1" />
                     {active && <span className="absolute left-2 top-2 rounded-full bg-gold px-2.5 py-1 text-xs font-bold text-ink">נבחר</span>}
                   </div>
                   <div className="flex flex-1 flex-col gap-0.5 p-3">

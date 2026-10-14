@@ -1,5 +1,6 @@
 // The talking avatar: HeyGen MP4 when public/assets/<id>.mp4 exists, otherwise an
 // animated character badge. A gold halo and sound waves show while it speaks.
+import CharacterArt from '../shared/CharacterArt.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { avatarVideoSrc, VIDEO_CUES } from '../../data/characters.js'
 import { dispatch } from '../../engine/store.js'
@@ -59,19 +60,13 @@ export default function AvatarStage({ character, isTalking }) {
           onTimeUpdate={onTimeUpdate}
           className={`absolute inset-0 h-full w-full object-cover ${hasVideo ? '' : 'hidden'}`}
         />
-        {!hasVideo && character.portrait && (
-          <img
-            src={character.portrait}
-            alt={character.name}
-            width={640}
-            height={480}
-            className={`absolute inset-0 h-full w-full object-cover object-top ${isTalking ? 'avatar-talking' : 'avatar-idle'}`}
+        {!hasVideo && (
+          <CharacterArt
+            character={character}
+            talking={isTalking}
+            imgClassName={`absolute inset-0 h-full w-full object-cover object-top ${isTalking ? 'avatar-talking' : 'avatar-idle'}`}
+            figureClassName="absolute inset-0 h-full w-full pb-14 pt-2"
           />
-        )}
-        {!hasVideo && !character.portrait && (
-          <div className="flex h-full w-full flex-col items-center justify-center">
-            <span className={`select-none text-[150px] leading-none drop-shadow-xl ${isTalking ? 'avatar-talking' : ''}`}>{character.emoji}</span>
-          </div>
         )}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-board via-board/70 to-transparent px-4 pb-3 pt-10 text-center">
           <div className="font-display text-3xl text-chalk">{character.name}</div>

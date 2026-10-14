@@ -1,4 +1,5 @@
 // End-of-lesson class certificate: score, % completed and the values the class showed.
+import CharacterArt from './CharacterArt.jsx'
 import { useRef } from 'react'
 import { CLASS_SIZE } from '../../data/lesson.js'
 import { dispatch } from '../../engine/store.js'
@@ -13,11 +14,9 @@ export default function ClassVictoryCertificate({ character, classPower, complet
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-board/90 p-4 backdrop-blur" role="dialog" aria-modal="true" aria-labelledby="cert-title">
       <div ref={card} className="print-area pop-in relative w-full max-w-2xl overflow-hidden rounded-[28px] border-[6px] border-gold bg-[#fffaf0] p-8 text-center text-ink shadow-2xl">
         <div className="pointer-events-none absolute inset-3 rounded-[20px] border-2 border-dashed border-gold-deep/60" />
-        {character.portrait ? (
-          <img src={character.portrait} alt={character.name} width={640} height={480} className="mx-auto h-28 w-28 rounded-full border-4 border-gold object-cover object-top" />
-        ) : (
-          <div className="text-6xl">{character.emoji}</div>
-        )}
+        <div className="mx-auto h-28 w-28 overflow-hidden rounded-full border-4 border-gold" style={{ background: character.color }}>
+          <CharacterArt character={character} imgClassName="h-full w-full object-cover object-top" figureClassName="h-full w-full" />
+        </div>
         <h2 id="cert-title" className="mt-2 font-display text-4xl text-gold-deep">תעודת כוח הכיתה</h2>
         <p className="mt-2 text-xl">הכיתה שלנו השלימה את המשימה <b>{character.gameTitle}</b> עם {character.name}!</p>
 

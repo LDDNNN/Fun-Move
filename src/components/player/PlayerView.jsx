@@ -1,5 +1,6 @@
 // #player: the smart board. One idea per moment, readable from the back row:
 // what we do now (giant word + a kid showing it), who is talking, how far we are.
+import CharacterArt from '../shared/CharacterArt.jsx'
 import { getCharacter } from '../../data/characters.js'
 import { CUE_TEXT, isCommand } from '../../data/cues.js'
 import { dispatch, useLesson } from '../../engine/store.js'
@@ -16,11 +17,9 @@ import VoiceAgent, { AgentQuestion } from './VoiceAgent.jsx'
 function StartScreen({ character, onStart }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
-      {character.portrait ? (
-        <img src={character.portrait} alt={character.name} width={640} height={480} className="h-[38vh] w-auto max-w-full rounded-[32px] border-4 border-gold object-cover shadow-[0_24px_60px_-20px_rgba(0,0,0,.6)]" />
-      ) : (
-        <div className="text-[140px] leading-none">{character.emoji}</div>
-      )}
+      <div className="h-[38vh] w-[30vh] max-w-full overflow-hidden rounded-[32px] border-4 border-gold shadow-[0_24px_60px_-20px_rgba(0,0,0,.6)]" style={{ background: `radial-gradient(circle at 50% 35%, ${character.color}, #0f1e3d 75%)` }}>
+        <CharacterArt character={character} imgClassName="h-full w-full object-cover object-top" />
+      </div>
       <h1 className="font-display text-6xl text-balance text-chalk">{character.gameTitle}</h1>
       <p className="max-w-[40ch] text-2xl leading-relaxed text-chalk/85">{character.opening}</p>
       <button
@@ -81,11 +80,12 @@ function CharacterColumn({ character, s }) {
         className={`relative aspect-[4/5] w-full max-w-[280px] shrink-0 overflow-hidden rounded-[28px] border-4 transition-colors duration-300 lg:max-h-[46vh] ${s.isTalking ? 'halo-talking border-gold' : 'border-board-3'}`}
         style={{ background: `radial-gradient(circle at 50% 35%, ${character.color}, #0f1e3d 75%)` }}
       >
-        {character.portrait ? (
-          <img src={character.portrait} alt={character.name} width={640} height={480} className={`absolute inset-0 h-full w-full object-cover object-top ${s.isTalking ? 'avatar-talking' : 'avatar-idle'}`} />
-        ) : (
-          <span className="flex h-full items-center justify-center text-[120px]">{character.emoji}</span>
-        )}
+        <CharacterArt
+          character={character}
+          talking={s.isTalking}
+          imgClassName={`absolute inset-0 h-full w-full object-cover object-top ${s.isTalking ? 'avatar-talking' : 'avatar-idle'}`}
+          figureClassName="absolute inset-0 h-full w-full pb-10 pt-2"
+        />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-board via-board/70 to-transparent px-3 pb-2 pt-8 text-center font-display text-3xl text-chalk">
           {character.name}
         </div>

@@ -2,7 +2,7 @@
 // jump, ice-statue freeze, belly breathing, running, clapping, passing a ball...
 import { useEffect, useState } from 'react'
 
-function useTime(fps = 30) {
+export function useTime(fps = 30) {
   const [t, setT] = useState(0)
   useEffect(() => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -26,7 +26,7 @@ function useTime(fps = 30) {
 const rad = (d) => (d * Math.PI) / 180
 
 // Angles in degrees from "hanging straight down"; positive swings the limb outward.
-function limb(origin, side, a1, len1, bend, len2) {
+export function limb(origin, side, a1, len1, bend, len2) {
   const [ox, oy] = origin
   const ex = ox + side * Math.sin(rad(a1)) * len1
   const ey = oy + Math.cos(rad(a1)) * len1
@@ -88,10 +88,10 @@ export function poseFor(cue, t, phase = 0) {
   }
 }
 
-const INK = '#2b2140'
+export const INK = '#2b2140'
 
 // A rounded, tapered limb segment from a (radius r1) to b (radius r2).
-function capsule([ax, ay], [bx, by], r1, r2) {
+export function capsule([ax, ay], [bx, by], r1, r2) {
   const len = Math.hypot(bx - ax, by - ay) || 0.001
   const nx = -(by - ay) / len
   const ny = (bx - ax) / len
@@ -99,7 +99,7 @@ function capsule([ax, ay], [bx, by], r1, r2) {
   return `M ${p(ax + nx * r1, ay + ny * r1)} L ${p(bx + nx * r2, by + ny * r2)} A ${r2} ${r2} 0 0 0 ${p(bx - nx * r2, by - ny * r2)} L ${p(ax - nx * r1, ay - ny * r1)} A ${r1} ${r1} 0 0 0 ${p(ax + nx * r1, ay + ny * r1)} Z`
 }
 
-const mix = (a, b, k) => {
+export const mix = (a, b, k) => {
   const n = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))
   const [x, y] = [n(a), n(b)]
   return `#${x.map((v, i) => Math.round(v + (y[i] - v) * k).toString(16).padStart(2, '0')).join('')}`
@@ -147,7 +147,7 @@ function Hair({ style, color, top }) {
 }
 
 // Joined segments: all outlines first, then all fills, so joints stay seamless.
-function Limb({ parts }) {
+export function Limb({ parts }) {
   return (
     <g>
       {parts.map(([a, b, r1, r2], i) => (

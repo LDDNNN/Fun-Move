@@ -8,6 +8,7 @@ const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n))
 
 export const initialState = {
   characterId: 'samson',
+  avatarStyle: 'photo', // photo · drawn
   phase: 'setup',
   level: 1,
   running: false,
@@ -45,7 +46,9 @@ export function reducer(state, action) {
     case 'SYNC_STATE':
       return { ...action.state }
     case 'SELECT_CHARACTER':
-      return { ...initialState, characterId: action.id, runId: state.runId + 1 }
+      return { ...initialState, characterId: action.id, avatarStyle: state.avatarStyle, runId: state.runId + 1 }
+    case 'SET_AVATAR_STYLE':
+      return { ...state, avatarStyle: action.value }
     case 'START_LESSON':
       return { ...goPhase(state, 'setup'), lessonStartedAt: state.lessonStartedAt ?? Date.now() }
     case 'GO_PHASE':
@@ -95,7 +98,7 @@ export function reducer(state, action) {
     case 'SHOW_CERTIFICATE':
       return { ...state, showCertificate: action.value }
     case 'RESET':
-      return { ...initialState, characterId: state.characterId, runId: state.runId + 1 }
+      return { ...initialState, characterId: state.characterId, avatarStyle: state.avatarStyle, runId: state.runId + 1 }
     default:
       return state
   }
