@@ -79,6 +79,7 @@ export default function Dashboard() {
       </header>
 
       <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6">
+        <section className="rounded-2xl border-2 border-gold-deep bg-[#fff6df] p-5 shadow-sm"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-bold">🎲 משחקי חברה — הפעלה מיידית</h2><p className="mt-1 text-sm">8 משחקים פשוטים עם הדמיות, הסבר מוקרא והוראות לסייעת. בלי טיימר ובלי ניקוד.</p></div><a href="#quick-games" className="rounded-xl bg-gold px-6 py-4 text-lg font-bold text-board">פתחי משחקים ←</a></div></section>
         <Panel title="בחירת דמות ומשחק">
           <div className="mb-3 flex flex-wrap items-center gap-2" role="radiogroup" aria-label="סגנון הדמות">
             <span className="font-bold">סגנון הדמות:</span>
