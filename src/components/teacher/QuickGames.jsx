@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { QUICK_GAMES } from '../../data/quickGames.js'
+import AnimatedClassKids from './AnimatedClassKids.jsx'
 import { getCharacter } from '../../data/characters.js'
 import CharacterArt from '../shared/CharacterArt.jsx'
 import { hasHebrewVoice, speak, stopSpeaking } from '../../engine/speech.js'
@@ -98,7 +99,7 @@ export default function QuickGames() {
               <div className="h-24 w-20 overflow-hidden rounded-xl bg-board-3"><CharacterArt character={character} imgClassName="h-full w-full object-cover" figureClassName="h-full w-full" /></div>
               <div><p className="text-sm text-gold">הדמות מסבירה: {character.name}</p><h2 className="font-display text-3xl">{game.title}</h2></div>
             </div>
-            <Demo id={game.id} />
+            {['hoop','over','under','mirror','circleball'].includes(game.id) ? <AnimatedClassKids id={game.id} /> : <Demo id={game.id} />}
             <div className="mt-4 rounded-2xl bg-white/10 p-4"><p className="mb-1 text-sm font-bold text-gold">הדמות אומרת לילדים</p><p className="text-xl leading-relaxed">{game.speech}</p></div>
             <div className="mt-4 flex flex-wrap gap-2">
               <button onClick={()=>play(game.speech)} className="rounded-xl bg-gold px-5 py-4 text-lg font-bold text-board">🔊 השמיעי הסבר לילדים</button>
